@@ -2,6 +2,7 @@
 
 angular.module('myApp.view1', ['ngRoute'])
 
+//add config for route provider
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/view1', {
     templateUrl: 'view1/view1.html',
@@ -10,7 +11,8 @@ angular.module('myApp.view1', ['ngRoute'])
 }])
 
 .controller('View1Ctrl', ['$scope', function($scope) {
-//        TODO: add this template for server
+
+//  TODO: add this template for server
     var modelTemplate = {
         group1 : [
             {
@@ -62,7 +64,7 @@ angular.module('myApp.view1', ['ngRoute'])
 
         //default names for group and contact
         $scope.newGroup = '';
-        $scope.newContact = '';
+        $scope.newContact = {};
 
         /*************** functions ***************/
         $scope.changeGtoupFn      = this.changeGroup.bind( this );
@@ -83,20 +85,42 @@ angular.module('myApp.view1', ['ngRoute'])
 
     SimpleCtrl.prototype.changeGroup = function( newGroup ) {
 
-//        if ( $scope.chosenGroup === newGroup ) {
-//            console.info( 'User chose the same group. Group name: ' + newGroup );
-//            return;
-//        }
+        if ( $scope.model[newGroup] === $scope.chosenGroup ) {
+            alert('You want to chose the same group');
+            return;
+        }
 
-        debugger;
+        if ( !$scope.model[newGroup] ) $scope.model[newGroup] = [];
+
+        $scope.model[newGroup].push( $scope.chosenContact );
+
+        //TODO: get selected group
     };
 
     SimpleCtrl.prototype.addNewContact = function() {
-
+        $scope.isNewModeActive = true;
     };
 
     SimpleCtrl.prototype.saveNewContact = function() {
+        var template = angular.copy( contactTemplate );
 
+        template.name = $scope.newContact.name;
+        template.surname = $scope.newContact.name;
+        template.tel = $scope.newContact.name;
+
+        //reset new contact
+        $scope.newContact = {};
+
+        if ( $scope.groups.indexOf( $scope.newGroup ) === -1 ) {
+            console.log( 'This group doesn\'t exists: ' + $scope.newGroup );
+            return;
+        }
+
+        if ( !$scope.model[ $scope.newGroup ] ) $scope.model[ $scope.newGroup ] = [];
+
+        $scope.model[ $scope.newGroup ].push( template );
+
+        $scope.isNewModeActive = false;
     };
 
     SimpleCtrl.prototype.addNewGroup = function() {
@@ -115,6 +139,9 @@ angular.module('myApp.view1', ['ngRoute'])
 
         //change modes
         $scope.isNewGroupModeActive = false;
+
+        //reset template for new group
+        $scope.newGroup = '';
     };
 
     return new SimpleCtrl();

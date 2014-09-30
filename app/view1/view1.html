@@ -11,7 +11,28 @@
 
 <!--------------------------------- EDIT MODES --------------------------------->
 <div ng-show="isNewModeActive">
-    <input ng-model="newContact">
+    <!--name-->
+    <label>New name: </label>
+    <input ng-model="newContact.name">
+    <br>
+
+    <!--surname-->
+    <label>New surname: </label>
+    <input ng-model="newContact.surname">
+    <br>
+
+    <!--tel-->
+    <label>New telephone: </label>
+    <input ng-model="newContact.tel">
+    <br>
+
+    <!--group-->
+    <label>Choose group: </label>
+    <select
+            ng-model="newGroup"
+            ng-options="group for group in groups"
+            ></select>
+    <br>
 </div>
 
 <div ng-show="isNewGroupModeActive">
