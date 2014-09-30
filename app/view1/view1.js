@@ -67,6 +67,7 @@ angular.module('myApp.view1', ['ngRoute'])
         $scope.newContact = {};
 
         /*************** functions ***************/
+        $scope.changeChosenGroupFn = this.changeChosenGroup.bind( this );
         $scope.changeGtoupFn      = this.changeGroup.bind( this );
         $scope.addNewContactFn    = this.addNewContact.bind( this );
         $scope.saveNewContactFn   = this.saveNewContact.bind( this );
@@ -82,7 +83,10 @@ angular.module('myApp.view1', ['ngRoute'])
         return Object.keys( $scope.model );
     };
 
-
+    /**
+     * change group for contact
+     * @param newGroup
+     */
     SimpleCtrl.prototype.changeGroup = function( newGroup ) {
 
         if ( $scope.model[newGroup] === $scope.chosenGroup ) {
@@ -94,13 +98,24 @@ angular.module('myApp.view1', ['ngRoute'])
 
         $scope.model[newGroup].push( $scope.chosenContact );
 
-        //TODO: get selected group
+        //delete unused chosenGroup
+        $scope.chosenGroup.splice( $scope.chosenGroup.indexOf( $scope.chosenContact ), 1 );
+
+        //reset data
+        $scope.chosenContact = $scope.chosenGroup[ 0 ];
+        $scope.newGroup = '';
     };
 
+    /**
+     * on 'add new contact' mode
+     */
     SimpleCtrl.prototype.addNewContact = function() {
         $scope.isNewModeActive = true;
     };
 
+    /**
+     * save new contact
+     */
     SimpleCtrl.prototype.saveNewContact = function() {
         var template = angular.copy( contactTemplate );
 
@@ -123,10 +138,16 @@ angular.module('myApp.view1', ['ngRoute'])
         $scope.isNewModeActive = false;
     };
 
+    /**
+     *  on 'add new group' mode
+     */
     SimpleCtrl.prototype.addNewGroup = function() {
         $scope.isNewGroupModeActive = true;
     };
 
+    /**
+     * save new group
+     */
     SimpleCtrl.prototype.saveNewGroup = function() {
         if ( $scope.groups.indexOf( $scope.newGroup ) !== -1 ) {
             console.log( 'User wants to create new not unique group: ' + $scope.newGroup );
@@ -142,6 +163,13 @@ angular.module('myApp.view1', ['ngRoute'])
 
         //reset template for new group
         $scope.newGroup = '';
+    };
+
+    /**
+     * update default chosen group
+     */
+    SimpleCtrl.prototype.changeChosenGroup = function() {
+        $scope.chosenContact = $scope.chosenGroup[ 0 ];
     };
 
     return new SimpleCtrl();

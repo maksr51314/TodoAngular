@@ -1,4 +1,3 @@
-<p>This is simple contact book</p>
 
 <!--------------------------------- BUTTONS --------------------------------->
 <div>
@@ -47,6 +46,7 @@
         <select
                 ng-model="chosenGroup"
                 ng-options="key for (key , value) in model"
+                ng-change="changeChosenGroupFn()"
         ></select>
 
         <br>
