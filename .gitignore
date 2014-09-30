@@ -1,7 +1,0 @@
-logs/*
-!.gitkeep
-node_modules/
-bower_components/
-.idea/
-tmp
-.DS_Store
