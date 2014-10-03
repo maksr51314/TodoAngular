@@ -51,6 +51,8 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
      */
     function SimpleCtrl() {
         /************** definitions **************/
+
+        this.contact = {};
         //data from server
         $scope.model = modelTemplate;
 
@@ -60,14 +62,15 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
 
         //all groups
         $scope.groups = this.getGroups();
-        $scope.changedGroup = undefined;
+        $scope.changedGroup = $scope.groups[ 0 ];
 
         //flags for control active edit states
         $scope.isNewModeActive = false;
         $scope.isNewGroupModeActive = false;
+        $scope.isEditModeActive = false;
 
         //default names for group and contact
-        $scope.newGroup = '';
+        $scope.newGroup = $scope.groups[ 0 ];
         $scope.newContact = {};
 
         /*************** functions ***************/
@@ -110,7 +113,7 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
 
         //reset data
         $scope.chosenGroup = $scope.model[ newGroup ];
-        $scope.chosenContact = $scope.chosenGroup[ $scope.chosenGroup.length - 1 ];
+        $scope.chosenContact = $scope.chosenGroup.last();
         $scope.newGroup = '';
     };
 
@@ -119,31 +122,26 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
      */
     SimpleCtrl.prototype.addNewContact = function() {
         $scope.isNewModeActive = true;
+
+        //add simple form to groups
+        this.contact = angular.copy( contactTemplate );
+//        $scope.chosenGroup.push( this.contact );
+        $scope.chosenContact = this.contact;
+
+        //enable lines edit
+        $scope.isEditModeActive = true;
     };
 
     /**
      * save new contact
      */
     SimpleCtrl.prototype.saveNewContact = function() {
-        var template = angular.copy( contactTemplate );
-
-        template.name = $scope.newContact.name;
-        template.surname = $scope.newContact.name;
-        template.tel = $scope.newContact.name;
-
-        //reset new contact
-        $scope.newContact = {};
-
-        if ( $scope.groups.indexOf( $scope.newGroup ) === -1 ) {
-            console.log( 'This group doesn\'t exists: ' + $scope.newGroup );
-            return;
-        }
-
         if ( !$scope.model[ $scope.newGroup ] ) $scope.model[ $scope.newGroup ] = [];
 
-        $scope.model[ $scope.newGroup ].push( template );
+        $scope.model[ $scope.newGroup ].push( this.contact );
 
-        $scope.isNewModeActive = false;
+        //disable lines edit
+        $scope.isEditModeActive = false;
     };
 
     /**
@@ -177,15 +175,23 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
      * update default chosen group
      */
     SimpleCtrl.prototype.changeChosenGroup = function() {
-        $scope.chosenContact = $scope.chosenGroup[ 0 ];
+        if ( $scope.chosenGroup ) $scope.chosenContact = $scope.chosenGroup[ 0 ];
     };
 
     /**
      * cancel save mode
      */
     SimpleCtrl.prototype.cancelSave = function() {
-        $scope.isNewModeActive = false;
-        $scope.isNewGroupModeActive = false;
+        if ( $scope.isNewModeActive ) {
+            $scope.isNewModeActive = !$scope.isNewModeActive;
+
+            $scope.changedGroup.splice( $scope.changedGroup.lastIndex(), 1 );
+        }
+
+        if ( $scope.isNewGroupModeActive ) {
+            $scope.isNewGroupModeActive = !$scope.isNewGroupModeActive;
+        }
+
     };
 
     /**
@@ -202,6 +208,14 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
      */
     SimpleCtrl.prototype.selectNewTab = function(item) {
         $scope.chosenContact = item;
+    };
+
+    Array.prototype.last = function() {
+        return this[ this.lastIndex() ];
+    };
+
+    Array.prototype.lastIndex = function() {
+        return this.length - 1;
     };
 
     return new SimpleCtrl();

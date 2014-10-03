@@ -1,58 +1,5 @@
 
 <!--------------------------------- EDIT MODES --------------------------------->
-<div ng-show="isNewModeActive" >
-    <!--name-->
-    <div class="control-group row" >
-        <div class="col-lg-2 col-md-1 col-sm-6 col-xs-8 ">
-            <label>New name: </label>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-8 ">
-            <input class="form-control" ng-model="newContact.name">
-        </div>
-    </div>
-    <br>
-
-    <!--surname-->
-    <div class="control-group row" >
-        <div class="col-lg-2 col-md-1 col-sm-6 col-xs-8 ">
-            <label>New surname: </label>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-8 ">
-            <input class="form-control" ng-model="newContact.surname">
-        </div>
-    </div>
-    <br>
-
-
-
-    <!--tel-->
-    <div class="control-group row" >
-        <div class="col-lg-2 col-md-1 col-sm-6 col-xs-8 ">
-            <label>New telephone: </label>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-8 ">
-            <input class="form-control" ng-model="newContact.tel">
-        </div>
-    </div>
-    <br>
-
-    <!--group-->
-    <div class="control-group row" >
-
-        <div class="col-lg-2 col-md-1 col-sm-6 col-xs-8 ">
-            <label class="control-label">Choose group: </label>
-        </div>
-
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-8 ">
-            <select class="form-control"
-                    ng-model="newGroup"
-                    ng-options="group for group in groups"
-                    ></select>
-        </div>
-    </div>
-    <br>
-</div>
-
 <div ng-show="isNewGroupModeActive">
 
     <div class="control-group row" >
@@ -68,8 +15,11 @@
 </div>
 
 
+<button class="btn btn-default" ng-show="isNewGroupModeActive" ng-click="saveNewGroupFn()">Save group</button>
+<button class="btn btn-default" ng-show="isNewGroupModeActive || isNewModeActive" ng-click="cancelSaveFn()">Cancel</button>
+
 <!--------------------------------- CONTACTS MENU --------------------------------->
-<div ng-show="!isNewModeActive && !isNewGroupModeActive" class="someMenu" style="display: inline-block; width: 30%; margin-right: 10px; padding-right: 10px; border-right: 1px solid #a7a7a7">
+<div ng-show="!isNewGroupModeActive" class="someMenu" style="display: inline-block; width: 30%; margin-right: 10px; padding-right: 10px; border-right: 1px solid #a7a7a7">
     <div class="searchBox">
         <!--select for groups-->
         <div class="control-group row">
@@ -122,19 +72,14 @@
     </div>
 </div>
 
-<!--------------------------------- BUTTONS --------------------------------->
-<button class="btn btn-default" ng-show="isNewGroupModeActive" ng-click="saveNewGroupFn()">Save group</button>
-<button class="btn btn-default" ng-show="isNewModeActive" ng-click="saveNewContactFn()">Save Contact</button>
-<button class="btn btn-default" ng-show="isNewGroupModeActive || isNewModeActive" ng-click="cancelSaveFn()">Cancel</button>
-
 <!--------------------------------- CONTACT DETAILS --------------------------------->
-<div ng-show="!isNewModeActive && !isNewGroupModeActive" class="details" style="display: inline-block; width: 65%; vertical-align: top;">
+<div ng-show="!isNewGroupModeActive" class="details" style="display: inline-block; width: 65%; vertical-align: top;">
     <div class="control-group row">
         <div class="col-lg-2 col-md-1  col-sm-6 col-xs-8 ">
             <label class="control-label">Name: </label>
         </div>
         <div class="col-lg-6 col-md-4  col-sm-6 col-xs-8 ">
-             <input class="form-control" ng-model="chosenContact.name">
+            <input ng-disabled="!isEditModeActive" class="form-control" ng-model="chosenContact.name">
         </div>
     </div>
     <br>
@@ -144,7 +89,7 @@
             <label class="control-label">Surname: </label>
         </div>
         <div class="col-lg-6 col-md-4  col-sm-6 col-xs-8 ">
-            <input class="form-control" ng-model="chosenContact.surname">
+            <input ng-disabled="!isEditModeActive"  class="form-control" ng-model="chosenContact.surname">
         </div>
     </div>
 
@@ -155,7 +100,7 @@
             <label class="control-label">Mobile: </label>
         </div>
         <div class="col-lg-6 col-md-4 col-sm-6 col-xs-8">
-            <input class="form-control" ng-model="chosenContact.tel">
+            <input ng-disabled="!isEditModeActive" class="form-control" ng-model="chosenContact.tel">
         </div>
     </div>
 
@@ -167,6 +112,7 @@
         </div>
         <div class="col-lg-6 col-md-4 col-sm-6 col-xs-8 ">
             <select
+                    ng-disabled="!isEditModeActive"
                     class="form-control"
                     ng-model="changedGroup"
                     ng-options="group for group in groups"
@@ -176,12 +122,16 @@
     </div>
     <div class="text-center">
         <button class="btn btn-default" ng-click="deleteContactFn()">Delete</button>
+        <button class="btn btn-default" ng-click="isEditModeActive = !isEditModeActive">Edit</button>
+
+
+        <!--------------------------------- BUTTONS --------------------------------->
+        <button class="btn btn-default" ng-show="isNewGroupModeActive" ng-click="saveNewGroupFn()">Save group</button>
+        <button class="btn btn-default" ng-show="isNewModeActive" ng-click="saveNewContactFn()">Save Contact</button>
+        <button class="btn btn-default" ng-show="isNewGroupModeActive || isNewModeActive" ng-click="cancelSaveFn()">Cancel</button>
+
     </div>
 </div>
-
-
-
-
 
 <!--------------------------------- MODEL --------------------------------->
 <!--<pre> {{model | json}} </pre>-->
